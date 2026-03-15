@@ -1,7 +1,7 @@
-public class Node {
+public class Node<T> {
     private Node prev;
     private Node next;
-    private String value;
+    private Object value;
 
     public Node(){
         this.prev = null;
@@ -9,7 +9,7 @@ public class Node {
         this.value = "";
     }
 
-    public Node(String value){
+    public Node(T value){
         this.prev = null;
         this.next = null;
         this.value = value;
@@ -31,17 +31,18 @@ public class Node {
         return prev;
     }
 
-    public void setNodeValue(String value){
+    public void setNodeValue(T value){
         this.value = value;
     }
 
-    public String getValue(){
-        return value;
+    public T getValue(){
+        return (T)value;
     }
 
     public Boolean checkIfNextExists(){
         return this.getNextNode() != null;
     }
+
 
     public Node getLast() {
         Node nextNode;

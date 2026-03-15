@@ -1,100 +1,153 @@
-public class CircularlyLinkedList {
+@SuppressWarnings("ALL")
+public class CircularlyLinkedList<T>{
     Node head;
     Node tail;
 
-    public void add(String value) {
+    public Node getHead(){
+        return head;
+    }
+
+    public void clear(){
+        head = null;
+        tail = null;
+    }
+
+    public void add(T value) {
         Node newNode = new Node(value);
         if (head == null) {
             head = newNode;
+            tail = newNode;
+            newNode.setNextNode(newNode);
+            newNode.setLastNode(newNode);
         } else {
-            Node tempNode = head;
-            while(tempNode.getNextNode() != null){
-                tempNode = tempNode.getNextNode();
-            }
-            tempNode.setNextNode(newNode);
-            newNode.setLastNode(tempNode);
+            tail.setNextNode(newNode);
+            newNode.setLastNode(tail);
+
+            newNode.setNextNode(head);
+            head.setLastNode(newNode);
+
+            tail = newNode;
         }
-        tail = newNode;
     }
 
     public void printAll(){
+        if (head == null) return;
         Node tempNode = head;
-        while(tempNode != null){
+        do{
             System.out.println(tempNode.getValue());
             tempNode = tempNode.getNextNode();
+        }while(tempNode != head);
+    }
+
+    public T getValAtIndex(int index){
+        Node tempNode = head;
+        for(int i = 0; i < index; i++){
+            if(tempNode == null) return null;
+            tempNode = tempNode.getNextNode();
         }
+        return (T) tempNode.getValue();
+    }
+
+    public Node getNodeAtIndex(int index){
+        Node tempNode = head;
+        for(int i = 0; i < index; i++){
+            if(tempNode == null) return null;
+            tempNode = tempNode.getNextNode();
+        }
+        return tempNode;
     }
 
     public void printReverse(){
+        if (tail == null) return;
         Node tempNode = tail;
-        while(tempNode != null){
+        do{
             System.out.println(tempNode.getValue());
             tempNode = tempNode.getLastNode();
-        }
+        }while(tempNode != tail);
     }
 
     public void removeAt(int index) {
-        Node tempNode = head;
+        int size = getSize();
+        if (size == 0 || index < 0 || index >= size) return;
 
-        if (index == 0) {
-            Node newNextNode = tempNode.getNextNode();
-            if (newNextNode != null) {
-                newNextNode.setLastNode(null);
-                head = newNextNode;
-            } else {
-                head = null;
-                tail = null;
-            }
+        Node tempNode = head;
+        for (int i = 0; i < index; i++) {
+            tempNode = tempNode.getNextNode();
+        }
+
+        if (size == 1) {
+            head = null;
+            tail = null;
         } else {
-            for (int i = 0; i < index; i++) {
-                tempNode = tempNode.getNextNode();
-            }
             Node prevNode = tempNode.getLastNode();
             Node nextNode = tempNode.getNextNode();
 
             prevNode.setNextNode(nextNode);
-            if (nextNode != null) {
-                nextNode.setLastNode(prevNode);
-            } else {
-                tail = prevNode;
-            }
+            nextNode.setLastNode(prevNode);
+
+            if (tempNode == head) head = nextNode;
+            if (tempNode == tail) tail = prevNode;
         }
     }
 
-    public void remove(String value) {
+    public boolean find(T data)
+    {
+        if (head == null) return false;
+        Node<T> currentNode = head;
+        do{
+            if(currentNode.getValue().equals(data))
+            {
+                return true;
+            }
+            currentNode = currentNode.getNextNode();
+        }while(currentNode != head);
+        return false;
+    }
+
+    public void remove(T value) {
+        if (head == null) return;
+
         Node tempNode = head;
         boolean found = false;
 
-        if (head.getValue().equalsIgnoreCase(value)) {
-            Node newNextNode = tempNode.getNextNode();
-            if (newNextNode != null) {
-                newNextNode.setLastNode(null);
-                head = newNextNode;
-            } else {
-                head = null;
-                tail = null;
-            }
-            found = true;
-        } else {
-            while (tempNode != null && !found) {
-                if (tempNode.getValue().equalsIgnoreCase(value)) {
+        do {
+            if (tempNode.getValue().equals(value)) {
+                found = true;
+                if (head == tail && head == tempNode) {
+                    head = null;
+                    tail = null;
+                } else {
                     Node prevNode = tempNode.getLastNode();
                     Node nextNode = tempNode.getNextNode();
 
                     prevNode.setNextNode(nextNode);
-                    if (nextNode != null) {
-                        nextNode.setLastNode(prevNode);
-                    } else {
-                        tail = prevNode;
-                    }
-                    found = true;
-                } else {
-                    tempNode = tempNode.getNextNode();
+                    nextNode.setLastNode(prevNode);
+
+                    if (tempNode == head) head = nextNode;
+                    if (tempNode == tail) tail = prevNode;
                 }
+                break;
             }
-        }
+            tempNode = tempNode.getNextNode();
+        } while (tempNode != head);
+
         if(!found){
             System.out.println("The given value '" + value + "' does not exist in the linked list\n\n");
         }
+    }
+
+    public int getSize(){
+        if (head == null) return 0;
+        Node tempNode = head;
+        int size = 0;
+        do{
+            size++;
+            tempNode = tempNode.getNextNode();
+        }while(tempNode != head);
+        return size;
+    }
+
+    public Node getLast(){
+        return tail;
     }
 }
