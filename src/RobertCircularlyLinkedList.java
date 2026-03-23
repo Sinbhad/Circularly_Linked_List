@@ -1,9 +1,9 @@
 @SuppressWarnings("ALL")
-public class CircularlyLinkedList<T>{
+public class RobertCircularlyLinkedList<T>{
     Node head;
     Node tail;
 
-    public Node getHead(){
+    public Node <T> getHead(){
         return head;
     }
 
@@ -27,6 +27,44 @@ public class CircularlyLinkedList<T>{
             head.setLastNode(newNode);
 
             tail = newNode;
+        }
+    }
+
+    public void addAtIndex(int index, T value) {
+        int size = getSize();
+
+        // 1. Handle index out of bounds or adding to the end
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        // 2. If adding to the end (or list is empty), use the existing add method
+        if (index == size) {
+            add(value);
+            return;
+        }
+
+        Node newNode = new Node(value);
+
+
+        if (index == 0) {
+            newNode.setNextNode(head);
+            newNode.setLastNode(tail);
+            head.setLastNode(newNode);
+            tail.setNextNode(newNode);
+            head = newNode;
+        } else {
+            Node currentNode = head;
+            for (int i = 0; i < index; i++) {
+                currentNode = currentNode.getNextNode();
+            }
+
+            Node prevNode = currentNode.getLastNode();
+
+            newNode.setNextNode(currentNode);
+            newNode.setLastNode(prevNode);
+            prevNode.setNextNode(newNode);
+            currentNode.setLastNode(newNode);
         }
     }
 
