@@ -1,6 +1,6 @@
 public class LLTester {
     public static void main(String[] args) {
-        RobertCircularlyLinkedList<String> linkedList = new RobertCircularlyLinkedList<>();
+        CustomCircularlyLinkedList<String> linkedList = new CustomCircularlyLinkedList<>();
         linkedList.add("Jared");
         linkedList.add("My Guy");
         linkedList.add("Byron");
